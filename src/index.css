@@ -1,0 +1,618 @@
+@import "tailwindcss";
+
+/* Touch has no hover; browsers fake one on tap and leave it stuck until
+   the next tap elsewhere. `can-hover:` replaces plain `hover:` everywhere
+   so hover effects only exist on real hover-capable pointers. */
+@custom-variant can-hover {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @slot;
+    }
+  }
+}
+
+/* `dark:` follows the theme switch (data-theme on <html>), not the OS setting directly,
+   and also applies inside any element that opts in with data-theme="dark" (the contact band). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Self-hosted variable fonts: two families only.
+   Bricolage Grotesque (display) ships with an optical-size axis. */
+@import "@fontsource-variable/bricolage-grotesque/opsz.css";
+@import "@fontsource-variable/instrument-sans";
+
+/* ------------------------------------------------------------------------------------------
+   PALETTE. Six colours, defined once. Everything else in this file is a role or a tint
+   (`color-mix`) of these six, so nothing outside the identity can enter the page.
+
+   Abalone Shell   #E1DED9  light foundation, warm neutral surfaces
+   Lush Aqua       #004466  primary brand: buttons, links, strong shapes
+   River of Gold   #E4B55D  sparing accent: selected states, small details
+   Hothouse Orchid #755468  complement: selected headings, secondary emphasis
+   Blende Blue     #A9C4C4  soft surfaces, shapes, gradients
+   Oblivion        #000435  dark foundation and the strongest contrast
+   ------------------------------------------------------------------------------------------ */
+:root {
+  --abalone: #e1ded9;
+  --aqua: #004466;
+  --gold: #e4b55d;
+  --orchid: #755468;
+  --blende: #a9c4c4;
+  --oblivion: #000435;
+}
+
+/* ---- Roles, light theme (the default) ----
+   Foundation = Abalone + Blende + Lush Aqua. Gold never carries text here (1.4:1 on Abalone);
+   it is a fill, a rule, a dot. Text pairs are Oblivion on Abalone (~14:1), Aqua on Abalone (7.7:1)
+   and Orchid on Abalone (4.9:1). */
+:root,
+[data-theme="light"] {
+  --c-bg: var(--abalone);
+  --c-bg-soft: color-mix(in oklab, var(--blende) 24%, var(--abalone));
+  --c-surface: color-mix(in oklab, var(--abalone) 50%, white);
+  --c-surface-2: color-mix(in oklab, var(--blende) 30%, var(--abalone));
+  --c-ink: var(--oblivion);
+  --c-ink-2: color-mix(in oklab, var(--oblivion) 80%, var(--abalone));
+  --c-ink-3: color-mix(in oklab, var(--oblivion) 66%, var(--abalone));
+  --c-line: color-mix(in oklab, var(--oblivion) 12%, transparent);
+  --c-line-strong: color-mix(in oklab, var(--oblivion) 30%, transparent);
+
+  --c-btn: var(--aqua);
+  --c-btn-hover: color-mix(in oklab, var(--aqua) 80%, var(--oblivion));
+  --c-on-btn: color-mix(in oklab, var(--abalone) 60%, white);
+  --c-link: var(--aqua);
+  --c-accent: var(--gold);
+  --c-accent-text: var(--orchid);
+  --c-comp: var(--orchid);
+  --c-soft: var(--blende);
+  --c-focus: var(--aqua);
+
+  /* Tints used by the cards, grids and glows. */
+  --c-glow: color-mix(in oklab, var(--aqua) 22%, transparent);
+  --c-grid: color-mix(in oklab, var(--aqua) 16%, transparent);
+  --c-shadow: color-mix(in oklab, var(--oblivion) 22%, transparent);
+
+  /* Severity, ordered by weight rather than by hue: Orchid (high), Gold (medium), Blende (low).
+     Every use also prints the word, so colour is never the only signal. */
+  --c-sev-high: var(--orchid);
+  --c-sev-medium: var(--gold);
+  --c-sev-low: var(--blende);
+  --c-sev-high-ink: color-mix(in oklab, var(--orchid) 80%, var(--oblivion));
+  --c-sev-medium-ink: color-mix(in oklab, var(--gold) 38%, var(--oblivion));
+  --c-sev-low-ink: color-mix(in oklab, var(--blende) 30%, var(--oblivion));
+
+  /* Gradient on the display name. Aqua to Orchid stays dark enough to read on Abalone. */
+  --g-name: linear-gradient(100deg, var(--aqua) 0%, color-mix(in oklab, var(--aqua) 40%, var(--orchid)) 45%, var(--orchid) 100%);
+  --g-text: linear-gradient(100deg, var(--aqua), var(--orchid), var(--aqua));
+  /* GradientText (React Bits) takes three stops; same pairing as the name. */
+  --gt-a: var(--aqua);
+  --gt-b: var(--orchid);
+  --gt-c: var(--aqua);
+}
+
+/* ---- Roles, dark theme ----
+   Oblivion + Lush Aqua. Aqua is too close to Oblivion to carry text (1.9:1), so it becomes the
+   surface and the glow, and the actions take Gold (10.4:1 with Oblivion text) and Blende
+   (10.7:1 on Oblivion). Orchid is lifted toward Abalone for text. */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --c-bg: var(--oblivion);
+  --c-bg-soft: color-mix(in oklab, var(--oblivion) 90%, var(--aqua));
+  --c-surface: color-mix(in oklab, var(--oblivion) 82%, var(--aqua));
+  --c-surface-2: color-mix(in oklab, var(--oblivion) 66%, var(--aqua));
+  --c-ink: var(--abalone);
+  --c-ink-2: color-mix(in oklab, var(--abalone) 84%, var(--oblivion));
+  --c-ink-3: color-mix(in oklab, var(--abalone) 68%, var(--oblivion));
+  --c-line: color-mix(in oklab, var(--abalone) 14%, transparent);
+  --c-line-strong: color-mix(in oklab, var(--abalone) 34%, transparent);
+
+  --c-btn: var(--gold);
+  --c-btn-hover: color-mix(in oklab, var(--gold) 82%, var(--abalone));
+  --c-on-btn: var(--oblivion);
+  --c-link: var(--blende);
+  --c-accent: var(--gold);
+  --c-accent-text: var(--gold);
+  --c-comp: color-mix(in oklab, var(--orchid) 52%, var(--abalone));
+  --c-soft: var(--blende);
+  --c-focus: var(--gold);
+
+  --c-glow: color-mix(in oklab, var(--aqua) 70%, transparent);
+  --c-grid: color-mix(in oklab, var(--blende) 20%, transparent);
+  --c-shadow: color-mix(in oklab, black 55%, transparent);
+
+  --c-sev-high: color-mix(in oklab, var(--orchid) 50%, var(--abalone));
+  --c-sev-medium: var(--gold);
+  --c-sev-low: var(--blende);
+  --c-sev-high-ink: color-mix(in oklab, var(--orchid) 40%, var(--abalone));
+  --c-sev-medium-ink: var(--gold);
+  --c-sev-low-ink: var(--blende);
+
+  --g-name: linear-gradient(100deg, var(--blende) 0%, color-mix(in oklab, var(--blende) 55%, var(--gold)) 55%, var(--gold) 100%);
+  --g-text: linear-gradient(100deg, var(--blende), var(--gold), var(--blende));
+  --gt-a: var(--blende);
+  --gt-b: var(--gold);
+  --gt-c: var(--blende);
+}
+
+@theme inline {
+  /* Fixed palette, for gradients and decoration. */
+  --color-abalone: var(--abalone);
+  --color-aqua: var(--aqua);
+  --color-gold: var(--gold);
+  --color-orchid: var(--orchid);
+  --color-blende: var(--blende);
+  --color-oblivion: var(--oblivion);
+
+  /* Roles, which follow the theme. */
+  --color-bg: var(--c-bg);
+  --color-bg-soft: var(--c-bg-soft);
+  --color-surface: var(--c-surface);
+  --color-surface-2: var(--c-surface-2);
+  --color-ink: var(--c-ink);
+  --color-ink-2: var(--c-ink-2);
+  --color-ink-3: var(--c-ink-3);
+  --color-line: var(--c-line);
+  --color-line-strong: var(--c-line-strong);
+  --color-btn: var(--c-btn);
+  --color-btn-hover: var(--c-btn-hover);
+  --color-on-btn: var(--c-on-btn);
+  --color-link: var(--c-link);
+  --color-accent: var(--c-accent);
+  --color-accent-text: var(--c-accent-text);
+  --color-comp: var(--c-comp);
+  --color-soft: var(--c-soft);
+  --color-focus: var(--c-focus);
+  --color-glow: var(--c-glow);
+  --color-sev-high: var(--c-sev-high);
+  --color-sev-medium: var(--c-sev-medium);
+  --color-sev-low: var(--c-sev-low);
+  --color-sev-high-ink: var(--c-sev-high-ink);
+  --color-sev-medium-ink: var(--c-sev-medium-ink);
+  --color-sev-low-ink: var(--c-sev-low-ink);
+
+  --shadow-card: 0 1px 2px var(--c-shadow), 0 14px 32px -16px var(--c-shadow);
+  --shadow-lift: 0 2px 4px var(--c-shadow), 0 26px 48px -20px var(--c-shadow);
+}
+
+@theme {
+  /* ---- Type ---- */
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
+
+  /* ---- Radius: one step for controls, one for surfaces ---- */
+  --radius-control: 0.75rem;
+  --radius-surface: 1.25rem;
+
+  /* ---- Motion ---- */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  --breakpoint-xs: 22.5rem;
+}
+
+@layer base {
+  * {
+    border-color: var(--c-line);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(5rem + env(safe-area-inset-top, 0px));
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--c-bg);
+    color: var(--c-ink);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: clip; /* last line of defence; layouts must not rely on it */
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button,
+  a,
+  [role="button"] {
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+  }
+
+  ::selection {
+    background-color: var(--gold);
+    color: var(--oblivion);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--c-focus);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--c-bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--c-ink) 28%, var(--c-bg));
+    border-radius: 999px;
+    border: 2px solid var(--c-bg);
+  }
+}
+
+/* ---- Type roles ----
+   Six roles, used everywhere; nothing sets its own font size ad hoc.
+   Large type gets tighter tracking and leading, small type stays near zero (Apple's
+   optical-size rule); body copy stays under ~70 characters per line via max-w utilities. */
+@utility type-h2 {
+  font-family: var(--font-display);
+  font-weight: 650;
+  font-size: clamp(2.25rem, 5.2vw, 3.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+@utility type-h3 {
+  font-family: var(--font-display);
+  font-weight: 620;
+  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+}
+@utility type-lead {
+  font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+  line-height: 1.6;
+}
+@utility type-meta {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+  color: var(--c-ink-3);
+}
+@utility type-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-ink-2);
+}
+
+/* ---- Layout system ----
+   One container width and one vertical rhythm for every section. */
+@utility container-page {
+  width: 100%;
+  max-width: 76rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  @media (min-width: 40rem) {
+    padding-inline: 2rem;
+  }
+  @media (min-width: 64rem) {
+    padding-inline: 2.5rem;
+  }
+}
+@utility section-y {
+  padding-block: 5rem;
+  @media (min-width: 48rem) {
+    padding-block: 7.5rem;
+  }
+}
+
+/* A raised surface: the one card look every section shares. */
+@utility surface {
+  background-color: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-surface);
+  box-shadow: var(--shadow-card);
+}
+
+/* Press feedback: every pressable element answers the moment it is pressed.
+   Unlayered on purpose: Tailwind's `transition-colors` (utilities layer) would otherwise
+   replace this transition list, and the press would snap instead of animate. `scale` is
+   used instead of `transform` so it composes with translate-based lifts. Colour changes
+   keep their 200ms; the press itself is 140ms. */
+.press-feedback {
+  transition-property: color, background-color, border-color, text-decoration-color, opacity, scale, box-shadow;
+  transition-duration: 200ms, 200ms, 200ms, 200ms, 200ms, 140ms, 200ms;
+  transition-timing-function: ease, ease, ease, ease, ease, var(--ease-out), ease;
+}
+.press-feedback:active {
+  scale: 0.97;
+}
+
+/* Icon swap (copy, download, theme): two icons share one cell and trade places in 160ms.
+   Opacity, a small scale and 2px of blur hide the seam between the two shapes. */
+.swap-icon {
+  display: grid;
+  place-items: center;
+}
+.swap-icon > * {
+  grid-area: 1 / 1;
+  display: flex;
+  transition:
+    opacity 160ms var(--ease-out),
+    scale 160ms var(--ease-out),
+    filter 160ms var(--ease-out);
+}
+.swap-icon-to,
+.swap-icon[data-swapped] .swap-icon-from {
+  opacity: 0;
+  scale: 0.85;
+  filter: blur(2px);
+}
+.swap-icon[data-swapped] .swap-icon-to {
+  opacity: 1;
+  scale: 1;
+  filter: none;
+}
+
+/* Mobile menu: a panel under the header that is revealed top-down with clip-path (no layout
+   animation). Opening takes 260ms; closing is a faster 160ms, because the system is
+   responding rather than the visitor deciding. */
+.menu-panel {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 160ms var(--ease-out);
+}
+.menu-panel[data-open="true"] {
+  clip-path: inset(0);
+  transition-duration: 260ms;
+}
+
+/* Header material (Apple-style): once the page scrolls, the bar becomes a translucent layer with
+   the content blurring underneath it, and a bright top edge. The mobile menu panel is NOT built on it:
+   a backdrop-filter nested inside another one only sees the parent, so the page would show through unblurred. */
+.nav-material {
+  background-color: color-mix(in oklab, var(--c-bg) 72%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+  box-shadow: inset 0 -1px 0 var(--c-line);
+}
+@media (prefers-reduced-transparency: reduce) {
+  .nav-material {
+    background-color: var(--c-bg);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* Theme switch: the browser snapshots the page before and after, and lib/theme.tsx grows the new
+   snapshot as a circle from the toggle. The default cross-fade is switched off so only the circle plays. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-new(root) {
+  z-index: 1;
+}
+
+/* Fade a background out toward the section below it, so no band ends in a hard edge. */
+.mask-fade-b {
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+}
+.mask-fade-x {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+.mask-fade-edges {
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, #000 40%, transparent 100%);
+}
+
+/* One continuous gradient across a split headline: every character paints the same gradient,
+   sized to the whole word box (see lib/charGradient.ts), so animating characters one by one does
+   not break the colour. Used by SplitText and ScrollFloat. */
+.char-gradient {
+  background-image: var(--g-name);
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Skills bento (React Bits MagicBento). Cards are plain surfaces; the glow, ring, stars and ripple
+   only exist for a real mouse (the component sets the variables, nothing here moves on its own). */
+.bento-grid {
+  display: grid;
+  gap: 1rem;
+  list-style: none;
+}
+.bento-card {
+  --glow-x: 50%;
+  --glow-y: 50%;
+  --glow-intensity: 0;
+  --glow-radius: 280px;
+  --glow-rgb: 0, 68, 102;
+  position: relative;
+  overflow: hidden;
+  padding: 1.5rem;
+  border-radius: var(--radius-surface);
+  border: 1px solid var(--c-line);
+  background-color: var(--c-surface);
+  box-shadow: var(--shadow-card);
+}
+.bento-glow .bento-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(
+    var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+    rgba(var(--glow-rgb), calc(var(--glow-intensity) * 0.14)),
+    transparent 70%
+  );
+}
+.bento-glow .bento-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 1.5px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+    rgba(var(--glow-rgb), calc(var(--glow-intensity) * 0.9)),
+    rgba(var(--glow-rgb), calc(var(--glow-intensity) * 0.35)) 35%,
+    transparent 65%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+}
+.bento-particle {
+  position: absolute;
+  z-index: 1;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  pointer-events: none;
+  background: rgb(var(--glow-rgb));
+  box-shadow: 0 0 6px rgba(var(--glow-rgb), 0.6);
+}
+.bento-ripple {
+  position: absolute;
+  z-index: 1;
+  border-radius: 999px;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(var(--glow-rgb), 0.28) 0%, rgba(var(--glow-rgb), 0.12) 30%, transparent 70%);
+}
+
+/* Dialogs (case study, lightbox) open occasionally, so they get a short, clear entrance.
+   They stay centred (not anchored to a trigger), so scale from the middle. */
+@keyframes scrim-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+}
+@keyframes scrim-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes panel-out {
+  to {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+}
+.dialog-scrim {
+  animation: scrim-in 200ms var(--ease-out) both;
+}
+.dialog-panel {
+  animation: panel-in 260ms var(--ease-out) both;
+}
+/* Exit is faster than entrance: closing is the system responding, not the visitor deciding. */
+.dialog-scrim[data-closing] {
+  animation: scrim-out 140ms var(--ease-out) both;
+}
+.dialog-panel[data-closing] {
+  animation: panel-out 140ms var(--ease-out) both;
+  pointer-events: none;
+}
+
+/* Photos: a slow 4% zoom on hover (pointer devices only) and an enlarge hint on hover and focus. */
+@media (hover: hover) and (pointer: fine) {
+  .photo-frame:hover img {
+    scale: 1.04;
+  }
+  .photo-frame:hover .photo-hint,
+  .photo-frame:focus-visible .photo-hint {
+    opacity: 1;
+    transform: none;
+  }
+}
+.photo-frame img {
+  transition: scale 700ms var(--ease-out);
+}
+.photo-frame:focus-visible .photo-hint {
+  opacity: 1;
+  transform: none;
+}
+.photo-hint {
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 200ms var(--ease-out),
+    transform 200ms var(--ease-out);
+}
+
+/* Bars and rules that draw in once their section scrolls into view (`data-in` set by useInView). */
+.draw-x {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 800ms var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 90ms + 150ms);
+}
+[data-in="true"] .draw-x,
+.draw-x[data-in="true"] {
+  transform: none;
+}
+
+/* Timeline rail: the base line is always there; its filled part is scrubbed by scroll (Experience). */
+.rail-fill {
+  transform-origin: top;
+}
+
+/* Reduced motion: gentler, not zero. Transforms and loops stop; short colour and opacity changes
+   stay, so hover, focus and state changes remain legible. The components themselves read the same
+   preference (useReducedMotion) and render their final state without scroll triggers. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+  .press-feedback:active {
+    scale: 1;
+  }
+  .draw-x {
+    transform: none;
+    transition: none;
+  }
+  .photo-frame:hover img {
+    scale: 1;
+  }
+  .swap-icon > * {
+    scale: 1 !important;
+    filter: none !important;
+  }
+  .menu-panel,
+  .menu-panel[data-open="true"] {
+    transition-duration: 1ms;
+  }
+}

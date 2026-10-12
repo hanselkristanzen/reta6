@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <title>Margareta Nadya Roselani Bramanjaya | Cyber Security Portfolio</title>
+    <meta
+      name="description"
+      content="Cyber Security student at BINUS University with hands-on experience in penetration testing, security monitoring, SIEM and log analysis, and secure web application development."
+    />
+    <meta name="author" content="Margareta Nadya Roselani Bramanjaya" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#e1ded9" />
+
+    <!-- Sets the theme before first paint so a returning visitor never sees a flash of the wrong one. -->
+    <script>
+      (function () {
+        var theme = "light";
+        try {
+          var stored = localStorage.getItem("theme");
+          theme =
+            stored === "light" || stored === "dark"
+              ? stored
+              : window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light";
+        } catch (error) {
+          /* storage blocked: keep the default */
+        }
+        var root = document.documentElement;
+        root.dataset.theme = theme;
+        root.style.colorScheme = theme;
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute("content", theme === "dark" ? "#000435" : "#e1ded9");
+      })();
+    </script>
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Margareta Nadya Roselani Bramanjaya | Cyber Security Portfolio" />
+    <meta
+      property="og:description"
+      content="Cyber Security student at BINUS University with hands-on experience in penetration testing, security monitoring, SIEM and log analysis, and secure web application development."
+    />
+    <meta property="og:image" content="/og-cover.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Margareta Nadya Roselani Bramanjaya | Cyber Security Portfolio" />
+    <meta
+      name="twitter:description"
+      content="Cyber Security student at BINUS University with hands-on experience in penetration testing, security monitoring, SIEM and log analysis, and secure web application development."
+    />
+    <meta name="twitter:image" content="/og-cover.png" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
