@@ -68,7 +68,7 @@ export function About() {
 
         <div className="mt-12 grid gap-12 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-7">
-            <ScrollReveal className="font-display text-[clamp(1.2rem,2.2vw,1.75rem)] leading-[1.28] font-medium tracking-[-0.02em]">
+            <ScrollReveal className="font-display text-[clamp(1rem,1.5vw,1.25rem)] leading-[1.4] font-medium tracking-[-0.01em]">
               {profile.summary}
             </ScrollReveal>
           </div>
