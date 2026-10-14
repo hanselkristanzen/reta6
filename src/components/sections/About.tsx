@@ -11,28 +11,28 @@ import { useTheme } from "@/lib/theme";
  * Four areas of focus, each tied to work that is on the resume. Every line
  * restates something already shown in Projects or Experience.
  */
-const FOCUS_AREAS = [
-  {
-    icon: Bug,
-    title: "Offensive security",
-    body: "Static and dynamic analysis of a Flutter-based hospital app, with every finding scored using CVSS v4.0.",
-  },
-  {
-    icon: Radar,
-    title: "Defensive security and monitoring",
-    body: "A Python tool that detects suspicious SSH activity, and a Splunk and Sysmon lab with SPL detections.",
-  },
-  {
-    icon: CodeXml,
-    title: "Application security",
-    body: "Secure web development with bcrypt hashing, account lockout, server-side validation, and XSS-safe output.",
-  },
-  {
-    icon: Users,
-    title: "Leadership and coordination",
-    body: "Led publication and marketing teams, and chaired LDK-CP HIMTI 2026, at BINUS University.",
-  },
-];
+// const FOCUS_AREAS = [
+//   {
+//     icon: Bug,
+//     title: "Offensive security",
+//     body: "Static and dynamic analysis of a Flutter-based hospital app, with every finding scored using CVSS v4.0.",
+//   },
+//   {
+//     icon: Radar,
+//     title: "Defensive security and monitoring",
+//     body: "A Python tool that detects suspicious SSH activity, and a Splunk and Sysmon lab with SPL detections.",
+//   },
+//   {
+//     icon: CodeXml,
+//     title: "Application security",
+//     body: "Secure web development with bcrypt hashing, account lockout, server-side validation, and XSS-safe output.",
+//   },
+//   {
+//     icon: Users,
+//     title: "Leadership and coordination",
+//     body: "Led publication and marketing teams, and chaired LDK-CP HIMTI 2026, at BINUS University.",
+//   },
+// ];
 
 /**
  * Reads a number out of a data string ("94%", "3.51 / 4.0"). By default it takes the first one;
