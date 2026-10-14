@@ -1,4 +1,5 @@
 import certCisco from "@/assets/images/cert-cisco-cybersecurity.webp";
+import certCambridgeB2First from "@/assets/images/cert-cambridge-b2-first.jpg";
 import certHiletMentor from "@/assets/images/cert-hilet-mentor.webp";
 import certLdkcpChairman from "@/assets/images/cert-ldkcp-chairman.webp";
 import certTechnoCoordinator from "@/assets/images/cert-techno-coordinator.webp";
@@ -497,6 +498,11 @@ export const certifications: Certification[] = [
     title: "Cambridge English: B2 First (FCE)",
     issuer: "Cambridge University Press & Assessment",
     date: "01 May 2023",
+    certificateImage: {
+      src: certCambridgeB2First,
+      alt: "Cambridge English certificate awarded to Nadya Roselani Bramanjaya, Grade C, CEFR B2",
+      caption: "Cambridge English Level 1 Certificate in ESOL International (First)",
+    },
   },
 ];
 
