@@ -87,7 +87,7 @@ export function About() {
           </dl>
         </div>
 
-        <h3 className="type-h3 mt-20">What I focus on</h3>
+        {/* <h3 className="type-h3 mt-20">What I focus on</h3>
         <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {FOCUS_AREAS.map((area, index) => (
             <li key={area.title}>
@@ -100,7 +100,7 @@ export function About() {
               </AnimatedContent>
             </li>
           ))}
-        </ul>
+        </ul> */}
       </div>
     </section>
   );
