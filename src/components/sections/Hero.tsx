@@ -114,7 +114,7 @@ export function Hero() {
             <span>{profile.program} student, focused on</span>
             <RotatingText
               texts={reduced ? [FOCUS[0]] : ROTATION}
-              loop={false}
+              loop={true}
               rotationInterval={2100}
               mainClassName="overflow-hidden rounded-control bg-[color-mix(in_oklab,var(--gold)_30%,transparent)] px-2.5 py-0.5 text-ink"
               splitLevelClassName="overflow-hidden pb-0.5"
