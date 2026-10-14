@@ -105,7 +105,7 @@ export function Contact() {
         </FadeContent>
         <h2 className="type-h2 mt-4 max-w-3xl">
           <DecryptedText
-            text="Let’s build something secure."
+            text="Got a role, a project, or a question?"
             animateOn="view"
             sequential
             revealDirection="start"
