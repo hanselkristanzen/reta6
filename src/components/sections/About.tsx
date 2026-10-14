@@ -1,4 +1,4 @@
-import { Bug, CodeXml, Radar, Users } from "lucide-react";
+// import { Bug, CodeXml, Radar, Users } from "lucide-react";
 import AnimatedContent from "@/components/reactbits/AnimatedContent";
 import CountUp from "@/components/reactbits/CountUp";
 import GradientText from "@/components/reactbits/GradientText";
