@@ -22,6 +22,37 @@ const ProjectCaseStudyModal = lazy(() =>
 const SEVERITY_LABEL: Record<Severity, string> = { high: "High", medium: "Medium", low: "Low" };
 const SEVERITY_BAR: Record<Severity, string> = { high: "bg-sev-high", medium: "bg-sev-medium", low: "bg-sev-low" };
 
+/** Fallback repository URLs for projects that do not yet define project.github. */
+const PROJECT_GITHUB_URLS: Record<string, string> = {
+  "soc log analyzer": "https://github.com/Mayhem127/SOC-Log-Analyzer",
+  "splunk enterprise siem & threat intel lab": "https://github.com/Mayhem127/Splunk-Enterprise-SIEM-Threat-Intel-Lab",
+  "splunk enterprise siem threat intel lab": "https://github.com/Mayhem127/Splunk-Enterprise-SIEM-Threat-Intel-Lab",
+  "waste wise": "https://github.com/Mayhem127/Waste-Wise",
+};
+
+function getProjectGithub(project: Project): string | undefined {
+  if (project.github) return project.github;
+
+  const names = [project.title, project.codename]
+    .filter((name): name is string => Boolean(name))
+    .map((name) => name.trim().toLowerCase());
+
+  for (const name of names) {
+    if (PROJECT_GITHUB_URLS[name]) return PROJECT_GITHUB_URLS[name];
+    if (name.includes("soc") && name.includes("log") && name.includes("analyzer")) {
+      return PROJECT_GITHUB_URLS["soc log analyzer"];
+    }
+    if (name.includes("splunk") && (name.includes("siem") || name.includes("threat intel"))) {
+      return PROJECT_GITHUB_URLS["splunk enterprise siem & threat intel lab"];
+    }
+    if (name.includes("waste") && name.includes("wise")) {
+      return PROJECT_GITHUB_URLS["waste wise"];
+    }
+  }
+
+  return undefined;
+}
+
 /**
  * Cards lift 2px on hover (pointer devices only) and settle to 99.2% while pressed anywhere on the card.
  * Only `translate` and `scale` move, so the hover stays off the paint path.
@@ -144,10 +175,17 @@ function DataPanel({ project }: { project: Project }) {
 
 /** Case study link, then the repository when the project has one. Pinned to the bottom of the card. */
 function ProjectActions({ project, onOpen }: { project: Project; onOpen: (project: Project) => void }) {
+  const githubUrl = getProjectGithub(project);
+
   return (
-    <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-3 pt-7">
+    <div className="relative z-10 mt-auto flex flex-wrap items-center gap-x-5 gap-y-3 pt-7">
       <CaseStudyButton project={project} onOpen={onOpen} />
-      {project.github && <GitHubLink href={project.github} project={project.codename ?? project.title} />}
+      {githubUrl && (
+        <GitHubLink
+          href={githubUrl}
+          project={project.codename ?? project.title}
+        />
+      )}
     </div>
   );
 }
@@ -291,9 +329,14 @@ export function Projects() {
                 <h3 className="type-h3 mt-2 max-w-md">{mobile.title}</h3>
                 <p className="mt-5 max-w-xl text-ink-2">{mobile.summary}</p>
                 {mobile.quote && <PullQuote className="mt-7">{mobile.quote}</PullQuote>}
-                <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
+                <div className="relative z-10 mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
                   <CaseStudyButton project={mobile} onOpen={setActiveProject} />
-                  {mobile.github && <GitHubLink href={mobile.github} project={mobile.title} />}
+                  {getProjectGithub(mobile) && (
+                    <GitHubLink
+                      href={getProjectGithub(mobile)!}
+                      project={mobile.codename ?? mobile.title}
+                    />
+                  )}
                 </div>
               </div>
 
