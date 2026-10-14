@@ -196,7 +196,7 @@
 
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: calc(9rem + env(safe-area-inset-top, 0px));
+    scroll-padding-top: calc(4rem + env(safe-area-inset-top, 0px));
     -webkit-text-size-adjust: 100%;
   }
 
